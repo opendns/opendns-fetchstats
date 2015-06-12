@@ -52,7 +52,7 @@ COOKIEJAR=`mktemp /tmp/opendns-fetchstats-XXXXXX`
 FORMTOKEN=`curl --silent --insecure \
 	--cookie-jar "$COOKIEJAR" \
 	"$LOGINURL" \
-	| grep formtoken \
+	| grep -m 1 formtoken \
 	| sed 's/^.*name="formtoken" value="\([0-9a-f]*\)".*$/\1/' \
 `
 
@@ -61,9 +61,11 @@ SIGNIN=`curl --silent --insecure \
 	--cookie "$COOKIEJAR" \
 	--cookie-jar "$COOKIEJAR" \
 	--data "formtoken=$FORMTOKEN&username=$USERNAME&password=$PASSWORD&sign_in_submit=foo" \
-	"$LOGINURL"`
+	"$LOGINURL" \
+	| grep "Logging you in"
+`
 
-if [ "$SIGNIN" != "" ]; then
+if [ "$SIGNIN" == "" ]; then
 	echo "Login failed.  Check username and password." >&2
 	exit 2
 fi

@@ -73,8 +73,12 @@ data = GetUrlData(LOGINURL, "GET", "")
 Set Matches = regEx.Execute(data)
 token = Matches(0).SubMatches(0)
 
-data = GetUrlData(LOGINURL, "POST", "formtoken=" & token & "&username=" & Escape(Username) & "&password=" & Escape(Password) & "&sign_in_submit=foo")
-If Len(data) <> 0 Then
+data = GetUrlData(LOGINURL, "POST", "formtoken=" & token & "&username=" & replace(escape(Username),"+","%2B")  & "&password=" & replace(escape(Password),"+","%2B")  & "&sign_in_submit=foo")
+
+regEx.Pattern = ".*Logging you in.*"
+Set loginMatches = regEx.Execute(data)
+
+If loginMatches.Count = 0 Then
 	Wscript.StdErr.Write "Login Failed. Check username and password" & vbCrLf
 	WScript.Quit 1
 End If
