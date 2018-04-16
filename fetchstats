@@ -5,7 +5,7 @@
 # Brian Hartvigsen <brian.hartvigsen@opendns.com>
 # Richard Crowley <richard@opendns.com>
 #
-
+OUT="data.csv"
 CSVURL="https://dashboard.opendns.com"
 LOGINURL="https://login.opendns.com/?source=dashboard"
 
@@ -49,6 +49,8 @@ USERNAME=`echo -n "$USERNAME" | od -A n -t x1 | tr -d '\n' | sed 's/ *$//;s/[ ]\
 COOKIEJAR=`mktemp /tmp/opendns-fetchstats-XXXXXX`
 
 # Get the signin page's form token
+echo "Logging in"
+
 FORMTOKEN=`curl --silent --insecure \
 	--cookie-jar "$COOKIEJAR" \
 	"$LOGINURL" \
@@ -69,6 +71,9 @@ if [ "$SIGNIN" == "" ]; then
 	echo "Login failed.  Check username and password." >&2
 	exit 2
 fi
+
+echo "Logged in. Fetching..."
+echo "" > "$OUT"
 
 # Fetch pages of Top Domains
 GO="yes"
@@ -92,10 +97,13 @@ while [ "yes" == "$GO" ] ; do
 		CSV=`echo "$CSV" | tail -n +2`
 	fi
 
+    	echo "Loaded page $PAGE"
+    
 	if [ -z "$CSV" ] ; then GO="no"
-	else echo "$CSV" ; fi
+	else echo "$CSV" >> "$OUT"; fi
 	PAGE=$(($PAGE + 1))
 done
 
-rm -f "$COOKIEJAR"
+echo "Done. Output at $OUT"
 
+rm -f "$COOKIEJAR"
