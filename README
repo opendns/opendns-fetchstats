@@ -7,7 +7,7 @@ SYNOPSIS
 DESCRIPTION
 	Automatically fetch your OpenDNS Top Domains data for the given
 	date range in CSV format.  Fetches all pages and combines them
-	into one CSV file, which is printed to STDOUT.
+	into one CSV file, which is printed to "data.csv".
 
 INSTALLATION
 	The script doesn't need to be "installed" but it is nice to put
