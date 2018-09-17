@@ -62,7 +62,7 @@ SIGNIN=`curl --silent --insecure \
 	--cookie-jar "$COOKIEJAR" \
 	--data "formtoken=$FORMTOKEN&username=$USERNAME&password=$PASSWORD&sign_in_submit=foo" \
 	"$LOGINURL" \
-	| grep ".*Loggin.*"
+	| grep ".*Login.*"
 `
 
 if [ "$SIGNIN" == "" ]; then
